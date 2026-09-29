@@ -1,0 +1,808 @@
+--// MIGUEL • FUCK DUCK
+
+--// ANTI DIE
+
+--// ONE LOCAL SCRIPT
+
+local Players = game:GetService("Players")
+
+local StarterGui = game:GetService("StarterGui")
+
+local RunService = game:GetService("RunService")
+
+local UserInputService = game:GetService("UserInputService")
+
+local LP = Players.LocalPlayer
+
+--==================================================
+
+-- KEY
+
+--==================================================
+
+local CORRECT_KEY = "qjeTDIZchDEZPgMfyzPgHfQDMKXaWVKp"
+
+local KeyAccepted = false
+
+local AntiDie = false
+
+local MenuLocked = false
+
+local connections = {}
+
+local billboard = nil
+
+local gradientConnection = nil
+
+--==================================================
+
+-- GUI
+
+--==================================================
+
+local gui = Instance.new("ScreenGui")
+
+gui.Name = "MiguelAntiDie"
+
+gui.ResetOnSpawn = false
+
+gui.IgnoreGuiInset = true
+
+gui.Parent = LP:WaitForChild("PlayerGui")
+
+--==================================================
+
+-- KEY WINDOW
+
+--==================================================
+
+local keyFrame = Instance.new("Frame")
+
+keyFrame.Size = UDim2.fromOffset(330,220)
+
+keyFrame.Position = UDim2.fromScale(0.5,0.5)
+
+keyFrame.AnchorPoint = Vector2.new(0.5,0.5)
+
+keyFrame.BackgroundColor3 = Color3.fromRGB(10,12,20)
+
+keyFrame.BorderSizePixel = 0
+
+keyFrame.Parent = gui
+
+local kc = Instance.new("UICorner")
+
+kc.CornerRadius = UDim.new(0,18)
+
+kc.Parent = keyFrame
+
+local ks = Instance.new("UIStroke")
+
+ks.Thickness = 1.5
+
+ks.Color = Color3.fromRGB(75,125,255)
+
+ks.Parent = keyFrame
+
+local keyTitle = Instance.new("TextLabel")
+
+keyTitle.Size = UDim2.new(1,-30,0,35)
+
+keyTitle.Position = UDim2.fromOffset(15,12)
+
+keyTitle.BackgroundTransparency = 1
+
+keyTitle.Text = "Miguel • Fuck Duck"
+
+keyTitle.TextColor3 = Color3.new(1,1,1)
+
+keyTitle.TextSize = 21
+
+keyTitle.Font = Enum.Font.GothamBold
+
+keyTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+keyTitle.Parent = keyFrame
+
+local keySub = Instance.new("TextLabel")
+
+keySub.Size = UDim2.new(1,-30,0,22)
+
+keySub.Position = UDim2.fromOffset(15,47)
+
+keySub.BackgroundTransparency = 1
+
+keySub.Text = "ENTER KEY"
+
+keySub.TextColor3 = Color3.fromRGB(130,140,160)
+
+keySub.TextSize = 11
+
+keySub.Font = Enum.Font.GothamMedium
+
+keySub.TextXAlignment = Enum.TextXAlignment.Left
+
+keySub.Parent = keyFrame
+
+-- Ключ ВИДЕН при вводе
+
+local keyBox = Instance.new("TextBox")
+
+keyBox.Size = UDim2.new(1,-30,0,43)
+
+keyBox.Position = UDim2.fromOffset(15,78)
+
+keyBox.BackgroundColor3 = Color3.fromRGB(23,26,39)
+
+keyBox.BorderSizePixel = 0
+
+keyBox.Text = ""
+
+keyBox.PlaceholderText = "Введите ключ..."
+
+keyBox.PlaceholderColor3 = Color3.fromRGB(100,108,125)
+
+keyBox.TextColor3 = Color3.new(1,1,1)
+
+keyBox.TextSize = 13
+
+keyBox.Font = Enum.Font.Gotham
+
+keyBox.ClearTextOnFocus = false
+
+keyBox.Parent = keyFrame
+
+local kbc = Instance.new("UICorner")
+
+kbc.CornerRadius = UDim.new(0,11)
+
+kbc.Parent = keyBox
+
+local checkButton = Instance.new("TextButton")
+
+checkButton.Size = UDim2.new(1,-30,0,42)
+
+checkButton.Position = UDim2.fromOffset(15,130)
+
+checkButton.BackgroundColor3 = Color3.fromRGB(55,105,255)
+
+checkButton.BorderSizePixel = 0
+
+checkButton.Text = "ПРОВЕРИТЬ КЛЮЧ"
+
+checkButton.TextColor3 = Color3.new(1,1,1)
+
+checkButton.TextSize = 13
+
+checkButton.Font = Enum.Font.GothamBold
+
+checkButton.Parent = keyFrame
+
+local cbc = Instance.new("UICorner")
+
+cbc.CornerRadius = UDim.new(0,11)
+
+cbc.Parent = checkButton
+
+local keyStatus = Instance.new("TextLabel")
+
+keyStatus.Size = UDim2.new(1,-30,0,25)
+
+keyStatus.Position = UDim2.fromOffset(15,177)
+
+keyStatus.BackgroundTransparency = 1
+
+keyStatus.Text = ""
+
+keyStatus.TextSize = 11
+
+keyStatus.Font = Enum.Font.GothamMedium
+
+keyStatus.Parent = keyFrame
+
+--==================================================
+
+-- MAIN MENU
+
+--==================================================
+
+local main = Instance.new("Frame")
+
+main.Size = UDim2.fromOffset(285,175)
+
+main.Position = UDim2.fromScale(0.5,0.5)
+
+main.AnchorPoint = Vector2.new(0.5,0.5)
+
+main.BackgroundColor3 = Color3.fromRGB(9,11,19)
+
+main.BorderSizePixel = 0
+
+main.Visible = false
+
+main.Parent = gui
+
+local mc = Instance.new("UICorner")
+
+mc.CornerRadius = UDim.new(0,18)
+
+mc.Parent = main
+
+local ms = Instance.new("UIStroke")
+
+ms.Thickness = 1.5
+
+ms.Color = Color3.fromRGB(70,120,255)
+
+ms.Parent = main
+
+--==================================================
+
+-- TOP BAR
+
+--==================================================
+
+local lockButton = Instance.new("TextButton")
+
+lockButton.Size = UDim2.fromOffset(30,30)
+
+lockButton.Position = UDim2.fromOffset(9,9)
+
+lockButton.BackgroundColor3 = Color3.fromRGB(25,28,40)
+
+lockButton.BorderSizePixel = 0
+
+lockButton.Text = "🔓"
+
+lockButton.TextSize = 15
+
+lockButton.Parent = main
+
+local lc = Instance.new("UICorner")
+
+lc.CornerRadius = UDim.new(0,9)
+
+lc.Parent = lockButton
+
+local title = Instance.new("TextLabel")
+
+title.Size = UDim2.new(1,-115,0,35)
+
+title.Position = UDim2.fromOffset(46,7)
+
+title.BackgroundTransparency = 1
+
+title.Text = "Miguel • Fuck Duck"
+
+title.TextColor3 = Color3.new(1,1,1)
+
+title.TextSize = 17
+
+title.Font = Enum.Font.GothamBold
+
+title.TextXAlignment = Enum.TextXAlignment.Left
+
+title.Parent = main
+
+local minus = Instance.new("TextButton")
+
+minus.Size = UDim2.fromOffset(30,30)
+
+minus.Position = UDim2.new(1,-69,0,9)
+
+minus.BackgroundColor3 = Color3.fromRGB(25,28,40)
+
+minus.BorderSizePixel = 0
+
+minus.Text = "−"
+
+minus.TextColor3 = Color3.new(1,1,1)
+
+minus.TextSize = 19
+
+minus.Font = Enum.Font.GothamBold
+
+minus.Parent = main
+
+local mic = Instance.new("UICorner")
+
+mic.CornerRadius = UDim.new(0,9)
+
+mic.Parent = minus
+
+local plus = Instance.new("TextButton")
+
+plus.Size = UDim2.fromOffset(30,30)
+
+plus.Position = UDim2.new(1,-35,0,9)
+
+plus.BackgroundColor3 = Color3.fromRGB(25,28,40)
+
+plus.BorderSizePixel = 0
+
+plus.Text = "+"
+
+plus.TextColor3 = Color3.new(1,1,1)
+
+plus.TextSize = 19
+
+plus.Font = Enum.Font.GothamBold
+
+plus.Visible = false
+
+plus.Parent = main
+
+local plc = Instance.new("UICorner")
+
+plc.CornerRadius = UDim.new(0,9)
+
+plc.Parent = plus
+
+--==================================================
+
+-- CONTENT
+
+--==================================================
+
+local divider = Instance.new("Frame")
+
+divider.Size = UDim2.new(1,-28,0,1)
+
+divider.Position = UDim2.fromOffset(14,48)
+
+divider.BackgroundColor3 = Color3.fromRGB(45,50,68)
+
+divider.BorderSizePixel = 0
+
+divider.Parent = main
+
+local antiButton = Instance.new("TextButton")
+
+antiButton.Size = UDim2.new(1,-28,0,60)
+
+antiButton.Position = UDim2.fromOffset(14,62)
+
+antiButton.BackgroundColor3 = Color3.fromRGB(25,29,43)
+
+antiButton.BorderSizePixel = 0
+
+antiButton.Text = "ANTI DIE   •   OFF"
+
+antiButton.TextColor3 = Color3.fromRGB(215,220,235)
+
+antiButton.TextSize = 14
+
+antiButton.Font = Enum.Font.GothamBold
+
+antiButton.Parent = main
+
+local abc = Instance.new("UICorner")
+
+abc.CornerRadius = UDim.new(0,13)
+
+abc.Parent = antiButton
+
+local status = Instance.new("TextLabel")
+
+status.Size = UDim2.new(1,-28,0,25)
+
+status.Position = UDim2.fromOffset(14,128)
+
+status.BackgroundTransparency = 1
+
+status.Text = "Protection disabled"
+
+status.TextColor3 = Color3.fromRGB(105,115,135)
+
+status.TextSize = 10
+
+status.Font = Enum.Font.Gotham
+
+status.Parent = main
+
+--==================================================
+
+-- HEAD TAG
+
+--==================================================
+
+local tagColors = {
+
+	Color3.fromRGB(0,140,255),
+	Color3.fromRGB(255,255,255),
+	Color3.fromRGB(0,255,100),
+	Color3.fromRGB(255,225,0),
+	Color3.fromRGB(0,220,255),
+	Color3.fromRGB(0,140,255)
+
+}
+
+local function createHeadTag(character)
+
+	if billboard then
+		billboard:Destroy()
+		billboard = nil
+	end
+	if gradientConnection then
+		gradientConnection:Disconnect()
+		gradientConnection = nil
+	end
+	local head = character:FindFirstChild("Head")
+	if not head then
+		return
+	end
+	billboard = Instance.new("BillboardGui")
+	billboard.Name = "MiguelPermanentTag"
+	billboard.Adornee = head
+	billboard.Size = UDim2.fromOffset(310,75)
+	billboard.StudsOffset = Vector3.new(0,3.2,0)
+	billboard.AlwaysOnTop = true
+	billboard.MaxDistance = 1000
+	billboard.Parent = head
+	local text = Instance.new("TextLabel")
+	text.Size = UDim2.fromScale(1,1)
+	text.BackgroundTransparency = 1
+	text.Text = "#1 BEST PAID ANTI DIE\n" ..
+		"discord.gg/etfy9Ctun"
+	text.TextSize = 15
+	text.Font = Enum.Font.GothamBold
+	text.TextStrokeTransparency = 0.2
+	text.TextStrokeColor3 = Color3.new(0,0,0)
+	text.Parent = billboard
+	local gradient = Instance.new("UIGradient")
+	gradient.Parent = text
+	local current = 1
+	local progress = 0
+	gradientConnection = RunService.RenderStepped:Connect(function(dt)
+		if not billboard or not billboard.Parent then
+			return
+		end
+		progress += dt * 0.8
+		if progress >= 1 then
+			progress = 0
+			current += 1
+			if current >= #tagColors then
+				current = 1
+			end
+		end
+		gradient.Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0,tagColors[current]),
+			ColorSequenceKeypoint.new(0.5,tagColors[current + 1]),
+			ColorSequenceKeypoint.new(1,tagColors[current])
+		})
+	end)
+
+end
+
+--==================================================
+
+-- KEEP TAG ALWAYS
+
+--==================================================
+
+local function keepTag()
+
+	if LP.Character then
+		task.spawn(function()
+			local head = LP.Character:WaitForChild("Head",10)
+			if head then
+				createHeadTag(LP.Character)
+			end
+		end)
+	end
+
+end
+
+LP.CharacterAdded:Connect(function(character)
+
+	task.wait(0.2)
+	-- Надпись остаётся независимо от ANTI DIE
+	if KeyAccepted then
+		createHeadTag(character)
+	end
+	-- Если ANTI DIE включён — заново включаем защиту
+	if AntiDie then
+		local humanoid = character:WaitForChild("Humanoid",5)
+		if humanoid then
+			humanoid.BreakJointsOnDeath = false
+			humanoid.MaxHealth = 1000000000
+			humanoid.Health = humanoid.MaxHealth
+			pcall(function()
+				humanoid:SetStateEnabled(Enum.HumanoidStateType.Dead,false)
+				humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown,false)
+				humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll,false)
+			end)
+		end
+	end
+
+end)
+
+--==================================================
+
+-- ANTI DIE
+
+--==================================================
+
+local function setResetButton(enabled)
+
+	task.spawn(function()
+		for i = 1,25 do
+			local success = pcall(function()
+				StarterGui:SetCore("ResetButtonCallback",enabled)
+			end)
+			if success then
+				return
+			end
+			task.wait(0.15)
+		end
+	end)
+
+end
+
+local function clearConnections()
+
+	for _,connection in ipairs(connections) do
+		pcall(function()
+			connection:Disconnect()
+		end)
+	end
+	table.clear(connections)
+
+end
+
+local function enableAntiDie()
+
+	AntiDie = true
+	antiButton.Text = "ANTI DIE   •   ON"
+	antiButton.BackgroundColor3 = Color3.fromRGB(20,115,65)
+	antiButton.TextColor3 = Color3.fromRGB(225,255,235)
+	status.Text = "Protection enabled"
+	status.TextColor3 = Color3.fromRGB(80,255,145)
+	setResetButton(false)
+	clearConnections()
+	local character = LP.Character
+	if character then
+		local humanoid = character:FindFirstChildOfClass("Humanoid")
+		if humanoid then
+			humanoid.BreakJointsOnDeath = false
+			humanoid.MaxHealth = 1000000000
+			humanoid.Health = humanoid.MaxHealth
+			pcall(function()
+				humanoid:SetStateEnabled(Enum.HumanoidStateType.Dead,false)
+				humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown,false)
+				humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll,false)
+			end)
+			table.insert(connections,
+				humanoid.HealthChanged:Connect(function(health)
+					if AntiDie and health < humanoid.MaxHealth then
+						humanoid.Health = humanoid.MaxHealth
+					end
+				end)
+			)
+		end
+	end
+
+end
+
+local function disableAntiDie()
+
+	AntiDie = false
+	antiButton.Text = "ANTI DIE   •   OFF"
+	antiButton.BackgroundColor3 = Color3.fromRGB(25,29,43)
+	antiButton.TextColor3 = Color3.fromRGB(215,220,235)
+	status.Text = "Protection disabled"
+	status.TextColor3 = Color3.fromRGB(105,115,135)
+	setResetButton(true)
+	clearConnections()
+	-- ВАЖНО:
+	-- Надпись НЕ удаляем.
+	-- Она остаётся над головой даже после выключения ANTI DIE.
+
+end
+
+antiButton.MouseButton1Click:Connect(function()
+
+	if AntiDie then
+		disableAntiDie()
+	else
+		enableAntiDie()
+	end
+
+end)
+
+--==================================================
+
+-- LOCK
+
+--==================================================
+
+lockButton.MouseButton1Click:Connect(function()
+
+	MenuLocked = not MenuLocked
+	if MenuLocked then
+		lockButton.Text = "🔒"
+		lockButton.BackgroundColor3 = Color3.fromRGB(55,75,130)
+	else
+		lockButton.Text = "🔓"
+		lockButton.BackgroundColor3 = Color3.fromRGB(25,28,40)
+	end
+
+end)
+
+--==================================================
+
+-- MINUS
+
+--==================================================
+
+minus.MouseButton1Click:Connect(function()
+
+	main.Size = UDim2.fromOffset(285,52)
+	lockButton.Visible = false
+	minus.Visible = false
+	title.Position = UDim2.fromOffset(14,7)
+	title.Size = UDim2.new(1,-55,0,35)
+	divider.Visible = false
+	antiButton.Visible = false
+	status.Visible = false
+	plus.Visible = true
+
+end)
+
+--==================================================
+
+-- PLUS
+
+--==================================================
+
+plus.MouseButton1Click:Connect(function()
+
+	main.Size = UDim2.fromOffset(285,175)
+	lockButton.Visible = true
+	minus.Visible = true
+	plus.Visible = false
+	title.Position = UDim2.fromOffset(46,7)
+	title.Size = UDim2.new(1,-115,0,35)
+	divider.Visible = true
+	antiButton.Visible = true
+	status.Visible = true
+
+end)
+
+--==================================================
+
+-- DRAG
+
+--==================================================
+
+local dragging = false
+
+local dragStart
+
+local startPosition
+
+title.InputBegan:Connect(function(input)
+
+	if MenuLocked then
+		return
+	end
+	if input.UserInputType == Enum.UserInputType.MouseButton1
+		or input.UserInputType == Enum.UserInputType.Touch then
+		dragging = true
+		dragStart = input.Position
+		startPosition = main.Position
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
+
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+
+	if not dragging or MenuLocked then
+		return
+	end
+	if input.UserInputType == Enum.UserInputType.MouseMovement
+		or input.UserInputType == Enum.UserInputType.Touch then
+		local delta = input.Position - dragStart
+		main.Position = UDim2.new(
+			startPosition.X.Scale,
+			startPosition.X.Offset + delta.X,
+			startPosition.Y.Scale,
+			startPosition.Y.Offset + delta.Y
+		)
+	end
+
+end)
+
+--==================================================
+
+-- KEY CHECK
+
+--==================================================
+
+local function checkKey()
+
+	-- Нажатие кнопки обязательно
+	local enteredKey = keyBox.Text
+	if enteredKey == CORRECT_KEY then
+		KeyAccepted = true
+		keyStatus.Text = "✓ KEY ACCEPTED"
+		keyStatus.TextColor3 = Color3.fromRGB(70,255,130)
+		checkButton.Text = "✓ ДОСТУП РАЗРЕШЁН"
+		checkButton.BackgroundColor3 = Color3.fromRGB(25,150,80)
+		-- СНАЧАЛА принимаем ключ
+		task.wait(0.7)
+		-- Потом закрываем Key System
+		keyFrame.Visible = false
+		-- Открываем главное меню
+		main.Visible = true
+		-- И СРАЗУ создаём постоянную надпись
+		if LP.Character then
+			createHeadTag(LP.Character)
+		end
+	else
+		keyStatus.Text = "✕ НЕВЕРНЫЙ КЛЮЧ"
+		keyStatus.TextColor3 = Color3.fromRGB(255,70,80)
+		checkButton.Text = "НЕВЕРНЫЙ КЛЮЧ"
+		checkButton.BackgroundColor3 = Color3.fromRGB(170,45,55)
+		task.delay(0.7,function()
+			if checkButton then
+				checkButton.Text = "ПРОВЕРИТЬ КЛЮЧ"
+				checkButton.BackgroundColor3 = Color3.fromRGB(55,105,255)
+			end
+		end)
+	end
+
+end
+
+-- Только кнопка ПРОВЕРИТЬ КЛЮЧ принимает ключ
+
+checkButton.MouseButton1Click:Connect(checkKey)
+
+-- Enter тоже просто нажимает проверку
+
+keyBox.FocusLost:Connect(function(enterPressed)
+
+	if enterPressed then
+		checkKey()
+	end
+
+end)
+
+--==================================================
+
+-- M
+
+--==================================================
+
+UserInputService.InputBegan:Connect(function(input,processed)
+
+	if processed then
+		return
+	end
+	if not KeyAccepted then
+		return
+	end
+	if input.KeyCode == Enum.KeyCode.M then
+		if main.Visible then
+			main.Visible = false
+		else
+			main.Visible = true
+		end
+	end
+
+end)
+
+--==================================================
+
+-- START
+
+--==================================================
+
+keyFrame.Visible = true
+
+main.Visible = false
